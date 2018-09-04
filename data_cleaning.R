@@ -70,7 +70,12 @@ for (i in seq_along(file.name)) {
 }
 # Convert NAs to blanks
 primerdata[is.na(primerdata)] <- ""
+# Add empty columns
+primerdata$` ` <- " "
 # Rearrange the columns
+primerdata.ord <- primerdata %>% 
+  select(POR, POD:OUR, ` `, transect, site, depth)
+
 
 # Export the file
-write.csv(primerdata, "primerdata.csv", row.names = FALSE)
+write.csv(primerdata.ord, "../primerdata.csv", row.names = FALSE)
