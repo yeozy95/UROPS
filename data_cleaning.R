@@ -3,6 +3,7 @@
 # Data Preparation
 
 library(readxl)
+library(xlsx)
 library(dplyr)
 library(reshape2)
 setwd("~/../Desktop/Zhi Yi's Working Folder/Data/R")
@@ -70,12 +71,17 @@ for (i in seq_along(file.name)) {
 }
 # Convert NAs to blanks
 primerdata[is.na(primerdata)] <- ""
-# Add empty columns
+# Add empty column and label column
 primerdata$` ` <- " "
+primerdata$"No." <- 1:nrow(primerdata)
+# Add Column for seawall and reef
+primerdata$type <- ifelse(grepl("Kusu", primerdata$site) | grepl("Hantu", primerdata$site) | 
+                            grepl("Sisters", primerdata$site) | grepl("Sultan", primerdata$site), "Reefs", 
+                          "Seawalls")
 # Rearrange the columns
 primerdata.ord <- primerdata %>% 
-  select(POR, POD:OUR, ` `, transect, site, depth)
+  select(No., POR, POD:OUR, ` `, transect, site, depth, type)
 
 
 # Export the file
-write.csv(primerdata.ord, "../primerdata.csv", row.names = FALSE)
+write.xlsx(primerdata.ord, "../primerdata.xlsx", row.names = FALSE)
