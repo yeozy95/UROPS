@@ -6,7 +6,7 @@ library(readxl)
 library(xlsx)
 library(dplyr)
 library(reshape2)
-setwd("~/../Desktop/Zhi Yi's Working Folder/Data/R")
+# setwd("~/../Desktop/Zhi Yi's Working Folder/Data/R")
 file.name <- list.files()
 # Need to manually input sheet names
 sheet.name <- c("LW6", "LW1", "Semakau Seawall", "LN2", "LN2", "LN1", "LN3", "LN2", "Hantu-cleaned",
@@ -85,3 +85,61 @@ primerdata.ord <- primerdata %>%
 
 # Export the file
 write.xlsx(primerdata.ord, "../primerdata.xlsx", row.names = FALSE)
+
+# Primer data, length-wise (genus)
+primerdata.length <- data.frame()
+for (i in seq_along(file.name)) {
+  df <- read_excel(file.name[i],
+                   sheet = sheet.name[i])
+  # Only take hard coral benthic communities
+  df <- df[df$`Benthic Cat.`== "HC",]
+  # Remove empty row between every transect
+  if (length(which(is.na(df$Site)))!= 0) {
+    df <- df[-which(is.na(df$Site)),]
+  }
+  # Change tentative genus ID to 3-letter shortcuts
+  df$`TENTATIVE GENUS ID` <- ifelse(nchar(df$`TENTATIVE GENUS ID`) != 3, genus.key[match(toupper(df$`TENTATIVE GENUS ID`), toupper(genus.key$genus.long)), "genus.short"],
+                                    df$`TENTATIVE GENUS ID`)
+  # Random data clean-ups go here
+  if (grepl("Semakau", file.name[i])){
+    df[is.na(df$`Transect #`), "Transect #"] <- 5
+  }
+  # Some files have inconsistent site names. Fix those
+  if (length(unique(df$Site))!= 1){
+    df$Site <- df$Site[1]
+  }
+  if (length(unique(df$Depth))!=1){
+    df$Depth <- df$Depth[1]
+  }
+  sitename <- unique(df$Site)
+  depth <- unique(df$Depth)
+  # Summarize the data needed
+  temp <- df %>%
+    group_by(transect = `Transect #`, genus = `TENTATIVE GENUS ID`) %>%
+    summarise(count = sum(Length))
+  # Melt it into a matrix
+  data <- dcast(temp, transect ~ genus, value.var = "count")
+  data$site <- sitename
+  data$depth <- depth
+  data[is.na(data)] <- ""
+  # For the first obs, use rbind. Subsequently merge the dataset
+  if (i == 1) {
+    primerdata.length <- rbind(primerdata.length,data)
+  } else{
+    primerdata.length <- merge(primerdata.length, data, all.x = TRUE, all.y = TRUE)
+  }
+}
+# Convert NAs to blanks
+primerdata.length[is.na(primerdata.length)] <- ""
+# Add empty column and label column
+primerdata.length$` ` <- " "
+primerdata.length$"No." <- 1:nrow(primerdata.length)
+# Add Column for seawall and reef
+primerdata.length$type <- ifelse(grepl("Kusu", primerdata.length$site) | grepl("Hantu", primerdata.length$site) | 
+                            grepl("Sisters", primerdata.length$site) | grepl("Sultan", primerdata.length$site), "Reefs", 
+                          "Seawalls")
+# Rearrange the columns
+primerdata.length.ord <- primerdata.length %>% 
+  select(No., POR, POD:OUR, ` `, transect, site, depth, type)
+
+write.xlsx(primerdata.length.ord, "../primerdata_length.xlsx", row.names = FALSE)
