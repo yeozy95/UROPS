@@ -6,7 +6,7 @@ library(readxl)
 library(xlsx)
 library(dplyr)
 library(reshape2)
-# setwd("~/../Desktop/Zhi Yi's Working Folder/Data/R")
+# setwd("R")
 file.name <- list.files()
 # Need to manually input sheet names
 sheet.name <- c("LW6", "LW1", "Semakau Seawall", "LN2", "LN2", "LN1", "LN3", "LN2", "Hantu-cleaned",
@@ -18,11 +18,12 @@ genus <- c("Acanthastrea (ACA)", "Acropora (ACR)", "Alveopora (ALV)", "Anacropor
            "Favites (FVS)", "Fungia (FUN)", "Galaxea (GAL)", "Gardineroseris (GAR)", "Goniastrea (GOS)",
            "Goniopora (GON)", "Heliofungia (HEL)", "Herpolitha (HER)", "Hydnophora (HYD)", "Leptastrea (LER)",
            "Leptoseris (LES)", "Lithophyllon (LIT)", "Lobophyllia (LOB)", "Madracis (MAD)", "Manicina (MAN)",
-           "Merulina (MER)", "Montipora (MON)", "Mycedium (MYC)", "Oulaphyllia (OUL)", "Oulastrea (OUR)", 
+           "Merulina (MER)", "Montipora (MON)", "Mycedium (MYC)", "Oulophyllia (OUL)", "Oulastrea (OUR)", 
            "Oxypora (OXY)", "Pachyseris (PAC)", "Pavona (PAV)", "Pectinia (PEC)", "Physogyra (PHY)", 
            "Platygyra (PLA)", "Plerogyra (PLE)", "Plesiastrea (PLS)", "Pocillopora (POC)", "Podabacia (POD)", 
            "Polyphyllia (POL)", "Porites (POR)", "Psammocora (PSA)", "Pseudosiderastrea (PSE)", "Stylocoeniella (STL)",
-           "Symphyllia (SYM)", "Tubastrea (TUB)", "Turbinaria (TUR)")
+           "Symphyllia (SYM)", "Tubastraea (TUB)", "Turbinaria (TUR)", "Dipsastraea (DIS)", "Bernardpora (BER)",
+           "Cycloseris (CYC)", "Coelastrea (COE)", "Fimbriaphyllia (FIM)")
 genus.long <- gsub("(\\w*).\\((\\w*)\\)", "\\1", genus)
 genus.short <- gsub("(\\w*).\\((\\w*)\\)", "\\2", genus)
 genus.key <- data.frame(genus.long, genus.short, stringsAsFactors = FALSE)
@@ -129,6 +130,8 @@ for (i in seq_along(file.name)) {
     primerdata.length <- merge(primerdata.length, data, all.x = TRUE, all.y = TRUE)
   }
 }
+
+
 # Convert NAs to blanks
 primerdata.length[is.na(primerdata.length)] <- ""
 # Add empty column and label column
@@ -143,3 +146,67 @@ primerdata.length.ord <- primerdata.length %>%
   select(No., POR, POD:OUR, ` `, transect, site, depth, type)
 
 write.xlsx(primerdata.length.ord, "../primerdata_length.xlsx", row.names = FALSE)
+
+# Species level data, including those that were not ID
+
+primerdata.allspecies <- data.frame()
+for (i in seq_along(file.name)) {
+  df <- read_excel(file.name[i],
+                   sheet = sheet.name[i])
+  # Only take hard coral benthic communities
+  df <- df[df$`Benthic Cat.`== "HC" | df$`Benthic Cat.` == "HC'",]
+  # Remove empty row between every transect
+  if (length(which(is.na(df$Site)))!= 0) {
+    df <- df[-which(is.na(df$Site)),]
+  }
+  # Cleaning the new species ID into genus and species identifiers (xxx.xxx)
+  tmp.gen <- gsub("(.*?) (.*)", "\\1", df$`New Species ID`)
+  tmp.gen <- genus.key[match(toupper(tmp.gen), toupper(genus.key$genus.long)), "genus.short"]
+  tmp.spc <- toupper(gsub("(.*?) (.{3}).*", "\\2", df$`New Species ID`))
+  df$`New Species ID` <- paste0(tmp.gen, ".", tmp.spc)
+  # Random data clean-ups go here
+  if (grepl("Semakau", file.name[i])){
+    df[is.na(df$`Transect #`), "Transect #"] <- 5
+  }
+  # Some files have inconsistent site names. Fix those
+  if (length(unique(df$Site))!= 1){
+    df$Site <- df$Site[1]
+  }
+  if (length(unique(df$Depth))!=1){
+    df$Depth <- df$Depth[1]
+  }
+  sitename <- unique(df$Site)
+  depth <- unique(df$Depth)
+  # Summarize the data needed
+  temp <- df %>%
+    group_by(transect = `Transect #`, species = `New Species ID`) %>%
+    summarise(length = sum(Length))
+  # Melt it into a matrix
+  data <- dcast(temp, transect ~ species, value.var = "length")
+  data$site <- sitename
+  data$depth <- depth
+  data[is.na(data)] <- ""
+  # For the first obs, use rbind. Subsequently merge the dataset
+  if (i == 1) {
+    primerdata.allspecies <- rbind(primerdata.allspecies,data)
+  } else{
+    primerdata.allspecies <- merge(primerdata.allspecies, data, all.x = TRUE, all.y = TRUE)
+  }
+}
+primerdata.allspecies[is.na(primerdata.allspecies)] <- ""
+# Add empty column and label column
+primerdata.allspecies$` ` <- " "
+primerdata.allspecies$"No." <- 1:nrow(primerdata.allspecies)
+# Add Column for seawall and reef
+primerdata.allspecies$type <- ifelse(grepl("Kusu", primerdata.allspecies$site) | grepl("Hantu", primerdata.allspecies$site) | 
+                                   grepl("Sisters", primerdata.allspecies$site) | grepl("Sultan", primerdata.allspecies$site), "Reefs", 
+                                 "Seawalls")
+# Rearrange the columns
+primerdata.allspecies.ord <- primerdata.allspecies %>% 
+  select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, transect, site, depth, type)
+
+primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
+write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
+# Do some checks on original data 
+check <- mapply(read_excel, file.name, sheet.name)
+unique.species <- unique(do.call(rbind, lapply(check, function(x) {unique(x[, "New Species ID"])})))
