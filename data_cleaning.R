@@ -87,7 +87,7 @@ primerdata.allspecies.ord <- primerdata.allspecies %>%
   select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, transect, site, depth, type)
 
 primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
-# write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
+write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
 
 # Rearranging for categories
 primerdata.categories <- data.frame()
@@ -139,7 +139,7 @@ primerdata.categories.ord <- primerdata.categories %>%
   select(No., DCA:TA, RC:TC, ` `, transect, site, depth, type)
 
 primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
-# write.xlsx(primerdata.categories.ord, "../primerdata_categories.xlsx", row.names = FALSE)
+write.xlsx(primerdata.categories.ord, "../primerdata_categories.xlsx", row.names = FALSE)
 
 # Separate by shallow and deep 
 primerdata.shallow <- data.frame()
@@ -204,7 +204,7 @@ primerdata.shallow.ord <- primerdata.shallow %>%
   select(No., "POR.SP.", POD.CRU:LER.PRU, ` `, transect, site, depth, type)
 
 primerdata.shallow.ord <- primerdata.shallow.ord[, -grep("NA", names(primerdata.shallow.ord))]
-# write.xlsx(primerdata.shallow.ord, "../primerdata_shallow.xlsx", row.names = FALSE)
+write.xlsx(primerdata.shallow.ord, "../primerdata_shallow.xlsx", row.names = FALSE)
 
 
 primerdata.deep <- data.frame()
@@ -270,7 +270,7 @@ primerdata.deep.ord <- primerdata.deep %>%
 
 primerdata.deep.ord <- primerdata.deep.ord[, -grep("NA", names(primerdata.deep.ord))]
 
-# write.xlsx(primerdata.deep.ord, "../primerdata_deep.xlsx", row.names = FALSE)
+write.xlsx(primerdata.deep.ord, "../primerdata_deep.xlsx", row.names = FALSE)
 
 # Summarize by site instead of by transect
 primerdata.site <- data.frame()
@@ -328,7 +328,7 @@ primerdata.site.ord <- primerdata.site %>%
   select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, site, depth, type)
 
 primerdata.site.ord <- primerdata.site.ord[, -grep("NA", names(primerdata.site.ord))]
-# write.xlsx(primerdata.site.ord, "../primerdata_site.xlsx", row.names = FALSE)
+write.xlsx(primerdata.site.ord, "../primerdata_site.xlsx", row.names = FALSE)
 
 
 # Do some checks on original data 
