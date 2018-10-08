@@ -85,9 +85,14 @@ primerdata.allspecies$type <- ifelse(grepl("Kusu", primerdata.allspecies$site) |
 # Rearrange the columns
 primerdata.allspecies.ord <- primerdata.allspecies %>% 
   select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, transect, site, depth, type)
+<<<<<<< HEAD
 if (length(grep("NA", names(primerdata.allspecies.ord))) != 0){
   primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
 }
+=======
+
+primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
+>>>>>>> 3445eba2965c784e8c47ec8a9c1d4cfa91afc21e
 write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
 
 # Rearranging for categories
@@ -139,9 +144,13 @@ primerdata.categories$type <- ifelse(grepl("Kusu", primerdata.categories$site) |
 primerdata.categories.ord <- primerdata.categories %>% 
   select(No., DCA:TA, RC:TC, ` `, transect, site, depth, type)
 
+<<<<<<< HEAD
 if (length(grep("NA", names(primerdata.categories.ord))) != 0){
   primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
 }
+=======
+primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
+>>>>>>> 3445eba2965c784e8c47ec8a9c1d4cfa91afc21e
 write.xlsx(primerdata.categories.ord, "../primerdata_categories.xlsx", row.names = FALSE)
 
 # Separate by shallow and deep 
@@ -206,9 +215,13 @@ primerdata.shallow$type <- ifelse(grepl("Kusu", primerdata.shallow$site) | grepl
 primerdata.shallow.ord <- primerdata.shallow %>% 
   select(No., "POR.SP.", POD.CRU:LER.PRU, ` `, transect, site, depth, type)
 
+<<<<<<< HEAD
 if (length(grep("NA", names(primerdata.shallow.ord))) != 0){
   primerdata.shallow.ord <- primerdata.shallow.ord[, -grep("NA", names(primerdata.shallow.ord))]
 }
+=======
+primerdata.shallow.ord <- primerdata.shallow.ord[, -grep("NA", names(primerdata.shallow.ord))]
+>>>>>>> 3445eba2965c784e8c47ec8a9c1d4cfa91afc21e
 write.xlsx(primerdata.shallow.ord, "../primerdata_shallow.xlsx", row.names = FALSE)
 
 
@@ -334,9 +347,13 @@ primerdata.site$type <- ifelse(grepl("Kusu", primerdata.site$site) | grepl("Hant
 primerdata.site.ord <- primerdata.site %>% 
   select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, site, depth, type)
 
+<<<<<<< HEAD
 if (length(grep("NA", names(primerdata.site.ord))) != 0){
   primerdata.site.ord <- primerdata.site.ord[, -grep("NA", names(primerdata.site.ord))]
 }
+=======
+primerdata.site.ord <- primerdata.site.ord[, -grep("NA", names(primerdata.site.ord))]
+>>>>>>> 3445eba2965c784e8c47ec8a9c1d4cfa91afc21e
 write.xlsx(primerdata.site.ord, "../primerdata_site.xlsx", row.names = FALSE)
 
 
