@@ -80,14 +80,15 @@ primerdata.allspecies$` ` <- " "
 primerdata.allspecies$"No." <- 1:nrow(primerdata.allspecies)
 # Add Column for seawall and reef
 primerdata.allspecies$type <- ifelse(grepl("Kusu", primerdata.allspecies$site) | grepl("Hantu", primerdata.allspecies$site) | 
-                                   grepl("Sisters", primerdata.allspecies$site) | grepl("Sultan", primerdata.allspecies$site), "Reefs", 
-                                 "Seawalls")
+                                       grepl("Sisters", primerdata.allspecies$site) | grepl("Sultan", primerdata.allspecies$site), "Reefs", 
+                                     "Seawalls")
 # Rearrange the columns
 primerdata.allspecies.ord <- primerdata.allspecies %>% 
   select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, transect, site, depth, type)
-
-primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
-# write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
+if (length(grep("NA", names(primerdata.allspecies.ord))) != 0){
+  primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
+}
+write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
 
 # Rearranging for categories
 primerdata.categories <- data.frame()
@@ -138,8 +139,10 @@ primerdata.categories$type <- ifelse(grepl("Kusu", primerdata.categories$site) |
 primerdata.categories.ord <- primerdata.categories %>% 
   select(No., DCA:TA, RC:TC, ` `, transect, site, depth, type)
 
-primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
-# write.xlsx(primerdata.categories.ord, "../primerdata_categories.xlsx", row.names = FALSE)
+if (length(grep("NA", names(primerdata.categories.ord))) != 0){
+  primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
+}
+write.xlsx(primerdata.categories.ord, "../primerdata_categories.xlsx", row.names = FALSE)
 
 # Separate by shallow and deep 
 primerdata.shallow <- data.frame()
@@ -197,14 +200,16 @@ primerdata.shallow$` ` <- " "
 primerdata.shallow$"No." <- 1:nrow(primerdata.shallow)
 # Add Column for seawall and reef
 primerdata.shallow$type <- ifelse(grepl("Kusu", primerdata.shallow$site) | grepl("Hantu", primerdata.shallow$site) | 
-                                       grepl("Sisters", primerdata.shallow$site) | grepl("Sultan", primerdata.shallow$site), "Reefs", 
-                                     "Seawalls")
+                                    grepl("Sisters", primerdata.shallow$site) | grepl("Sultan", primerdata.shallow$site), "Reefs", 
+                                  "Seawalls")
 # Rearrange the columns
 primerdata.shallow.ord <- primerdata.shallow %>% 
   select(No., "POR.SP.", POD.CRU:LER.PRU, ` `, transect, site, depth, type)
 
-primerdata.shallow.ord <- primerdata.shallow.ord[, -grep("NA", names(primerdata.shallow.ord))]
-# write.xlsx(primerdata.shallow.ord, "../primerdata_shallow.xlsx", row.names = FALSE)
+if (length(grep("NA", names(primerdata.shallow.ord))) != 0){
+  primerdata.shallow.ord <- primerdata.shallow.ord[, -grep("NA", names(primerdata.shallow.ord))]
+}
+write.xlsx(primerdata.shallow.ord, "../primerdata_shallow.xlsx", row.names = FALSE)
 
 
 primerdata.deep <- data.frame()
@@ -262,15 +267,17 @@ primerdata.deep$` ` <- " "
 primerdata.deep$"No." <- 1:nrow(primerdata.deep)
 # Add Column for seawall and reef
 primerdata.deep$type <- ifelse(grepl("Kusu", primerdata.deep$site) | grepl("Hantu", primerdata.deep$site) | 
-                                    grepl("Sisters", primerdata.deep$site) | grepl("Sultan", primerdata.deep$site), "Reefs", 
-                                  "Seawalls")
+                                 grepl("Sisters", primerdata.deep$site) | grepl("Sultan", primerdata.deep$site), "Reefs", 
+                               "Seawalls")
 # Rearrange the columns
 primerdata.deep.ord <- primerdata.deep %>% 
   select(No., DIS.FAV:TUR.MES, CYP.CHA:TUR.STE, ` `, transect, site, depth, type)
 
-primerdata.deep.ord <- primerdata.deep.ord[, -grep("NA", names(primerdata.deep.ord))]
+if (length(grep("NA", names(primerdata.deep.ord))) != 0){
+  primerdata.deep.ord <- primerdata.deep.ord[, -grep("NA", names(primerdata.deep.ord))]
+}
 
-# write.xlsx(primerdata.deep.ord, "../primerdata_deep.xlsx", row.names = FALSE)
+write.xlsx(primerdata.deep.ord, "../primerdata_deep.xlsx", row.names = FALSE)
 
 # Summarize by site instead of by transect
 primerdata.site <- data.frame()
@@ -321,14 +328,16 @@ primerdata.site$` ` <- " "
 primerdata.site$"No." <- 1:nrow(primerdata.site)
 # Add Column for seawall and reef
 primerdata.site$type <- ifelse(grepl("Kusu", primerdata.site$site) | grepl("Hantu", primerdata.site$site) | 
-                                       grepl("Sisters", primerdata.site$site) | grepl("Sultan", primerdata.site$site), "Reefs", 
-                                     "Seawalls")
+                                 grepl("Sisters", primerdata.site$site) | grepl("Sultan", primerdata.site$site), "Reefs", 
+                               "Seawalls")
 # Rearrange the columns
 primerdata.site.ord <- primerdata.site %>% 
   select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, site, depth, type)
 
-primerdata.site.ord <- primerdata.site.ord[, -grep("NA", names(primerdata.site.ord))]
-# write.xlsx(primerdata.site.ord, "../primerdata_site.xlsx", row.names = FALSE)
+if (length(grep("NA", names(primerdata.site.ord))) != 0){
+  primerdata.site.ord <- primerdata.site.ord[, -grep("NA", names(primerdata.site.ord))]
+}
+write.xlsx(primerdata.site.ord, "../primerdata_site.xlsx", row.names = FALSE)
 
 
 # Do some checks on original data 
