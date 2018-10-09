@@ -58,9 +58,10 @@ t.test(richness ~ depth, data = richness.numbers[richness.numbers$type == "Seawa
 
 # Transform data, then calculate dissimilarity matrix
 allspecies.trans <- cbind(sqrt(allspecies[,2:112]), allspecies[,114:117]) 
-dissimspecies.mat <- vegdist(allspecies[,1:111], method = "bray")
-simspecies.mat <- 1 - dissimspecies.mat
-adonis(dissimspecies.mat ~ type + depth, data = allspecies.trans)
+dissimspecies.mat <- vegdist(allspecies.trans[,1:111], method = "bray")
+simspecies.mat <- 100*(1 - dissimspecies.mat)
+perm <- adonis(dissimspecies.mat ~ type * depth, data = allspecies.trans)
+adonis(dissimspecies.mat ~ type, data = allspecies.trans, permuatations = 9999)
 
 # To check for stuff below -> since there are no Deep Reefs, then cannot test for interaction
 # # Variance is not statistically different -> ANOVA assumption met
