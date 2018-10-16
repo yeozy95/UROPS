@@ -6,11 +6,10 @@ library(readxl)
 library(xlsx)
 library(dplyr)
 library(reshape2)
-setwd("R")
-file.name <- list.files()
+file.name <- list.files(path = "R", full.names = TRUE)
 # Need to manually input sheet names
-sheet.name <- c("LW6", "LW1", "Semakau Seawall", "LN2", "LN2", "LN1", "LN3", "LN2", "Hantu-cleaned",
-                "Kusu-cleaned", "LE1", "LN1-cleaned", "LW1", "Small Sisters-cleaned", "SSN-cleaned")
+sheet.name <- c("LW6", "LW1", "Hantu", "Semakau Seawall", "Kusu", "SSN", "LN2", "LN2", "LN1", "LN3", "LN3", 
+                "Hantu-cleaned", "Kusu-cleaned", "LE1", "LN1-cleaned", "LW1", "Small Sisters-cleaned", "SSN-cleaned")
 # Set up a genus key so as to convert genus names into their 3 letter short forms 
 genus <- c("Acanthastrea (ACA)", "Acropora (ACR)", "Alveopora (ALV)", "Anacropora (ANA)", "Astreopora (AST)", 
            "Caulastrea (CAU)", "Corallimorph (COM)", "Coscinaraea (COS)", "Ctenactis (CTE)", "Cyphastrea (CYP)",
@@ -23,7 +22,7 @@ genus <- c("Acanthastrea (ACA)", "Acropora (ACR)", "Alveopora (ALV)", "Anacropor
            "Platygyra (PLA)", "Plerogyra (PLE)", "Plesiastrea (PLS)", "Pocillopora (POC)", "Podabacia (POD)", 
            "Polyphyllia (POL)", "Porites (POR)", "Psammocora (PSA)", "Pseudosiderastrea (PSE)", "Stylocoeniella (STL)",
            "Symphyllia (SYM)", "Tubastraea (TUB)", "Turbinaria (TUR)", "Dipsastraea (DIS)", "Bernardpora (BER)",
-           "Cycloseris (CYC)", "Coelastrea (COE)", "Fimbriaphyllia (FIM)")
+           "Cycloseris (CYC)", "Coelastrea (COE)", "Fimbriaphyllia (FIM)", "Homophyllia (HOM)")
 genus.long <- gsub("(\\w*).\\((\\w*)\\)", "\\1", genus)
 genus.short <- gsub("(\\w*).\\((\\w*)\\)", "\\2", genus)
 genus.key <- data.frame(genus.long, genus.short, stringsAsFactors = FALSE)
@@ -82,13 +81,20 @@ primerdata.allspecies$"No." <- 1:nrow(primerdata.allspecies)
 primerdata.allspecies$type <- ifelse(grepl("Kusu", primerdata.allspecies$site) | grepl("Hantu", primerdata.allspecies$site) | 
                                        grepl("Sisters", primerdata.allspecies$site) | grepl("Sultan", primerdata.allspecies$site), "Reefs", 
                                      "Seawalls")
+primerdata.allspecies$orientation <- ifelse(grepl("LN3", primerdata.allspecies$site) | grepl("Lazarus North 3", primerdata.allspecies$site) |
+                                              grepl("Lazarus North 1", primerdata.allspecies$site) | grepl("Sultan Shoal North", primerdata.allspecies$site)|
+                                              grepl("Kusu", primerdata.allspecies$site), "North",
+                                            ifelse(grepl("Lazarus East 1", primerdata.allspecies$site) | grepl("LW6", primerdata.allspecies$site)|
+                                                     grepl("Lazarus North 2", primerdata.allspecies$site), "South",
+                                                   ifelse(grepl("LW1", primerdata.allspecies$site) | grepl("Lazarus West 1", primerdata.allspecies$site) |
+                                                            grepl("SMK1", primerdata.allspecies$site) | grepl("Hantu", primerdata.allspecies$site), "West", NA)))
 # Rearrange the columns
 primerdata.allspecies.ord <- primerdata.allspecies %>% 
-  select(No., "POR.SP.", POD.CRU:HYD.RIG, ` `, transect, site, depth, type)
+  select(No., POD.CRU:HYD.RIG, ` `, transect, site, depth, type, orientation)
 if (length(grep("NA", names(primerdata.allspecies.ord))) != 0){
   primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
 }
-write.xlsx(primerdata.allspecies.ord, "../primerdata_allspecies.xlsx", row.names = FALSE)
+write.xlsx(primerdata.allspecies.ord, "primerdata_allspecies.xlsx", row.names = FALSE)
 
 # Rearranging for categories
 primerdata.categories <- data.frame()
@@ -135,16 +141,25 @@ primerdata.categories$"No." <- 1:nrow(primerdata.categories)
 primerdata.categories$type <- ifelse(grepl("Kusu", primerdata.categories$site) | grepl("Hantu", primerdata.categories$site) | 
                                        grepl("Sisters", primerdata.categories$site) | grepl("Sultan", primerdata.categories$site), "Reefs", 
                                      "Seawalls")
+primerdata.categories$orientation <- ifelse(grepl("LN3", primerdata.categories$site) | grepl("Lazarus North 3", primerdata.categories$site) |
+                                              grepl("Lazarus North 1", primerdata.categories$site) | grepl("Sultan Shoal North", primerdata.categories$site)|
+                                              grepl("Kusu", primerdata.categories$site), "North",
+                                            ifelse(grepl("Lazarus East 1", primerdata.categories$site) | grepl("LW6", primerdata.categories$site)|
+                                                     grepl("Lazarus North 2", primerdata.categories$site), "South",
+                                                   ifelse(grepl("LW1", primerdata.categories$site) | grepl("Lazarus West 1", primerdata.categories$site) |
+                                                            grepl("SMK1", primerdata.categories$site) | grepl("Hantu", primerdata.categories$site), "West", NA)))
+
 # Rearrange the columns
 primerdata.categories.ord <- primerdata.categories %>% 
-  select(No., DCA:TA, RC:TC, ` `, transect, site, depth, type)
+  select(No., DCA:SP, MA:TC, ` `, transect, site, depth, type, orientation)
 
 if (length(grep("NA", names(primerdata.categories.ord))) != 0){
   primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
 }
 
-write.xlsx(primerdata.categories.ord, "../primerdata_categories.xlsx", row.names = FALSE)
+write.xlsx(primerdata.categories.ord, "primerdata_categories.xlsx", row.names = FALSE)
 
+######################################### Don't really need to split now #####################
 # Separate by shallow and deep 
 primerdata.shallow <- data.frame()
 for (i in seq_along(file.name)) {
