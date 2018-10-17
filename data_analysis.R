@@ -44,7 +44,7 @@ allspecies.richness <- apply(allspecies[,2:117], 1, richness)
 as.richness.numbers <- data.frame(richness = allspecies.richness, depth = allspecies$depth,
                                   type = allspecies$type)
 # Check original data
-table(categories$type, categories$depth)
+table(categories$type, categories$depth, categories$orientation)
 table(allspecies$type, allspecies$depth) # Pretty balanced design
 
 # For category Shannon diversity Index
@@ -91,14 +91,14 @@ hist(residuals(as.richness))
 categories.trans <- cbind(sqrt(categories[,2:29]), categories[, 31:35])
 dissim.cate <- vegdist(categories.trans[, 1:28], method = "bray")
 sim.cate <- 100 *(1 - dissim.cate)
-perm.cat <- adonis(dissim.cate ~ type * depth, data = categories.trans, 
+perm.cat <- adonis(dissim.cate ~ type * depth * orientation, data = categories.trans, 
                    permutations = 9999)
 perm.cat
 # For Species
 allspecies.trans <- cbind(sqrt(allspecies[,2:117]), allspecies[,119:123]) 
 dissimspecies.mat <- vegdist(allspecies.trans[,1:116], method = "bray")
 simspecies.mat <- 100*(1 - dissimspecies.mat)
-perm.sp <- adonis(dissimspecies.mat ~ type * depth, data = allspecies.trans, permutations = 9999)
+perm.sp <- adonis(dissimspecies.mat ~ type * depth * orientation, data = allspecies.trans, permutations = 9999)
 perm.sp
 ###########################################OLD STUFF#######################################
 # For Shannon diversity index

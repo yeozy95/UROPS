@@ -34,7 +34,7 @@ for (i in seq_along(file.name)) {
   df <- read_excel(file.name[i],
                    sheet = sheet.name[i])
   # Only take hard coral benthic communities
-  df <- df[df$`Benthic Cat.`== "HC" | df$`Benthic Cat.` == "HC'",]
+  df <- df[df$`Benthic Cat.`== "HC",]
   # Remove empty row between every transect
   if (length(which(is.na(df$Site)))!= 0) {
     df <- df[-which(is.na(df$Site)),]
