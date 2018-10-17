@@ -90,7 +90,7 @@ hist(residuals(as.richness))
 # For Categories
 categories.trans <- cbind(sqrt(categories[,2:29]), categories[, 31:35])
 dissim.cate <- vegdist(categories.trans[, 1:28], method = "bray")
-sim.cate <- 100 *(1 - dissimspecies.mat)
+sim.cate <- 100 *(1 - dissim.cate)
 perm.cat <- adonis(dissim.cate ~ type * depth, data = categories.trans, 
                    permutations = 9999)
 perm.cat

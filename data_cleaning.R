@@ -83,7 +83,7 @@ primerdata.allspecies$type <- ifelse(grepl("Kusu", primerdata.allspecies$site) |
                                      "Seawalls")
 primerdata.allspecies$orientation <- ifelse(grepl("LN3", primerdata.allspecies$site) | grepl("Lazarus North 3", primerdata.allspecies$site) |
                                               grepl("Lazarus North 1", primerdata.allspecies$site) | grepl("Sultan Shoal North", primerdata.allspecies$site)|
-                                              grepl("Kusu", primerdata.allspecies$site), "North",
+                                              grepl("Kusu", primerdata.allspecies$site) | grepl("Small Sisters", primerdata.allspecies$site), "North",
                                             ifelse(grepl("Lazarus East 1", primerdata.allspecies$site) | grepl("LW6", primerdata.allspecies$site)|
                                                      grepl("Lazarus North 2", primerdata.allspecies$site), "South",
                                                    ifelse(grepl("LW1", primerdata.allspecies$site) | grepl("Lazarus West 1", primerdata.allspecies$site) |
@@ -143,7 +143,7 @@ primerdata.categories$type <- ifelse(grepl("Kusu", primerdata.categories$site) |
                                      "Seawalls")
 primerdata.categories$orientation <- ifelse(grepl("LN3", primerdata.categories$site) | grepl("Lazarus North 3", primerdata.categories$site) |
                                               grepl("Lazarus North 1", primerdata.categories$site) | grepl("Sultan Shoal North", primerdata.categories$site)|
-                                              grepl("Kusu", primerdata.categories$site), "North",
+                                              grepl("Kusu", primerdata.categories$site) | grepl("Small Sisters", primerdata.categories$site), "North",
                                             ifelse(grepl("Lazarus East 1", primerdata.categories$site) | grepl("LW6", primerdata.categories$site)|
                                                      grepl("Lazarus North 2", primerdata.categories$site), "South",
                                                    ifelse(grepl("LW1", primerdata.categories$site) | grepl("Lazarus West 1", primerdata.categories$site) |
