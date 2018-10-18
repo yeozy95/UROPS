@@ -88,9 +88,12 @@ primerdata.allspecies$orientation <- ifelse(grepl("LN3", primerdata.allspecies$s
                                                      grepl("Lazarus North 2", primerdata.allspecies$site), "South",
                                                    ifelse(grepl("LW1", primerdata.allspecies$site) | grepl("Lazarus West 1", primerdata.allspecies$site) |
                                                             grepl("SMK1", primerdata.allspecies$site) | grepl("Hantu", primerdata.allspecies$site), "West", NA)))
+primerdata.allspecies$slope <- ifelse(primerdata.allspecies$type == "Reefs", NA,
+                                      ifelse(grepl("Lazarus North 3", primerdata.allspecies$site) | grepl("LW6", primerdata.allspecies$site) |
+                                               grepl("LN3", primerdata.allspecies$site), "vertical", "sloping"))
 # Rearrange the columns
 primerdata.allspecies.ord <- primerdata.allspecies %>% 
-  select(No., POD.CRU:HYD.RIG, ` `, transect, site, depth, type, orientation)
+  select(No., POD.CRU:HYD.RIG, ` `, transect, site, depth, type, orientation, slope)
 if (length(grep("NA", names(primerdata.allspecies.ord))) != 0){
   primerdata.allspecies.ord <- primerdata.allspecies.ord[, -grep("NA", names(primerdata.allspecies.ord))]
 }
@@ -148,10 +151,13 @@ primerdata.categories$orientation <- ifelse(grepl("LN3", primerdata.categories$s
                                                      grepl("Lazarus North 2", primerdata.categories$site), "South",
                                                    ifelse(grepl("LW1", primerdata.categories$site) | grepl("Lazarus West 1", primerdata.categories$site) |
                                                             grepl("SMK1", primerdata.categories$site) | grepl("Hantu", primerdata.categories$site), "West", NA)))
+primerdata.categories$slope <- ifelse(primerdata.categories$type == "Reefs", NA,
+                                      ifelse(grepl("Lazarus North 3", primerdata.categories$site) | grepl("LW6", primerdata.categories$site) |
+                                               grepl("LN3", primerdata.categories$site), "vertical", "sloping"))
 
 # Rearrange the columns
 primerdata.categories.ord <- primerdata.categories %>% 
-  select(No., DCA:SP, MA:TC, ` `, transect, site, depth, type, orientation)
+  select(No., DCA:SP, MA:TC, ` `, transect, site, depth, type, orientation, slope)
 
 if (length(grep("NA", names(primerdata.categories.ord))) != 0){
   primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
