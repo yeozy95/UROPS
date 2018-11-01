@@ -157,7 +157,7 @@ primerdata.categories$slope <- ifelse(primerdata.categories$type == "Reefs", NA,
 
 # Rearrange the columns
 primerdata.categories.ord <- primerdata.categories %>% 
-  select(No., DCA:SP, MA:TC, ` `, transect, site, depth, type, orientation, slope)
+  select(No., DCA:SP, MA:AA, ` `, transect, site, depth, type, orientation, slope)
 
 if (length(grep("NA", names(primerdata.categories.ord))) != 0){
   primerdata.categories.ord <- primerdata.categories.ord[, -grep("NA", names(primerdata.categories.ord))]
