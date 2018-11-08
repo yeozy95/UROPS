@@ -109,10 +109,16 @@ spc.wide[, -1] <- replace(data.frame(lapply(spc.wide[,-1], as.character),
                                      stringsAsFactors = FALSE), spc.wide[, -1] != 0, "*")
 spc.wide[, -1] <- replace(data.frame(lapply(spc.wide[,-1], as.character),
                                      stringsAsFactors = FALSE), spc.wide[, -1] == 0, NA)
-# stargazer(spc.wide, rownames = FALSE, summary = FALSE, type = "latex", out = "species_list.tex")
+spc.wide <- spc.wide[-grep("Juvenile", spc.wide$Species), ]
 nrow(spc.wide)
 # Top values
 apply(spc.wide[,-1], 2, function(x){sum(!is.na(x))})
+
+spc.wide$Species <- gsub("(.*)", "\\textit{\\1}", spc.wide$Species)
+spc.wide.1 <- spc.wide[, 1:7]
+spc.wide.2 <- spc.wide[, c(1, 8:ncol(spc.wide))]
+stargazer(spc.wide.1, rownames = FALSE, summary = FALSE, type = "latex", out = "species_list1.tex")
+stargazer(spc.wide.2, rownames = FALSE, summary = FALSE, type = "latex", out = "species_list2.tex")
 head(unique.sites[order(unique.sites$species.diversity, decreasing = TRUE),], 3)
 head(unique.sites[order(unique.sites$category.diversity, decreasing = TRUE),], 3)
 # List of categories 
@@ -160,7 +166,11 @@ for (i in 1:nrow(cat.perc)){
 cat.percwide <- reshape2::melt(cat.perc, measure.vars = names(cat.perc)[2:ncol(cat.perc)],
                                variable.name = "category", value.name = "percentage")
 cat.percwide <- reshape2::dcast(cat.percwide, category ~ site, value.var = "percentage")
-# stargazer(cat.percwide, rownames = FALSE, summary = FALSE, type = "latex", out = "category_perc.tex")
+cat.perwide.1 <- cat.percwide[, 1:7]
+cat.perwide.2 <- cat.percwide[, c(1, 8:ncol(cat.percwide))]
+# stargazer(cat.perwide.1, rownames = FALSE, summary = FALSE, type = "latex", out = "category_perc1.tex")
+# stargazer(cat.perwide.2, rownames = FALSE, summary = FALSE, type = "latex", out = "category_perc2.tex")
+
 # Boxplot for shannon indices and richness
 bcd.box <- ggplot(c.sum, aes(x = site, y = diversity)) +
   geom_boxplot(fill = "steelblue") + 
@@ -218,10 +228,10 @@ hist(residuals(tmp.anov))
 
 # For species shannon index
 hist(as.diversity.numbers$diversity)
-ggboxplot(as.diversity.numbers, x = "depth", y = "diversity", color = "type")
-leveneTest(diversity ~ depth * orientation * type:slope, data = as.diversity.numbers)
-as.anov <- aov(diversity ~ depth * orientation * type:slope, data = as.diversity.numbers, 
-               contrasts = contr.sum(list(as.diversity.numbers$depth, as.diversity.numbers$type, as.diversity.numbers$orientation)))
+ggboxplot(as.sum, x = "depth", y = "diversity", color = "type")
+leveneTest(diversity ~ depth * orientation * type:slope, data = as.sum)
+as.anov <- aov(diversity ~ depth * orientation * type:slope, data = as.sum, 
+               contrasts = contr.sum(list(as.sum$depth, as.sum$type, as.sum$orientation)))
 summary(as.anov)
 TukeyHSD(as.anov, which = c("orientation", "type:slope"))
 plot(residuals(as.anov))
